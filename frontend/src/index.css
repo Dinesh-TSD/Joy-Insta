@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "garden";
+  default: true;
+  --color-primary: blue;
+  --color-secondary: teal;
+}
