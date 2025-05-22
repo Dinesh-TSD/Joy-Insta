@@ -61,8 +61,6 @@ const App = () => {
         {authUser && <RightPanel />}
         <Toaster />
       </div>
-
-
     </>
   )
 }

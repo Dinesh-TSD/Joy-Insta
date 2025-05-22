@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
@@ -10,8 +9,11 @@ import { useMutation } from '@tanstack/react-query'
 import { baseUrl } from '../../constant/url';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -35,9 +37,6 @@ const Signup = () => {
         })
 
         const data = await res.json();
-        console.log(data);
-
-
 
         if (!res.ok) throw new Error(data.error || "somthing went wrong");
 
@@ -50,6 +49,7 @@ const Signup = () => {
     },
     onSuccess: () => {
       toast.success("Account created successfully")
+      navigate('/login')
     }
   });
 
@@ -126,7 +126,7 @@ const Signup = () => {
               value={formData.password}
             />
           </label>
-          <button className='btn rounded-full btn-primary text-white'>
+          <button type="submit" className='btn rounded-full btn-primary text-white'>
             {isPending ? <LoadingSpinner /> : "Sign up"}
           </button>
           {isError && <p className='text-red-500'>{error.message}</p>}
