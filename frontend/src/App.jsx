@@ -49,7 +49,7 @@ const App = () => {
 
   return (
     <>
-      <div className='flex max-w-6xl mx-auto'>
+      <div className=''>
         {authUser && <SideBar />}
         <Routes>
           <Route path='/' element={authUser ? <Home /> : <Navigate to={"/login"} />} />
