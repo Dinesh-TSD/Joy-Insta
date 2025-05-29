@@ -11,11 +11,14 @@ import { FaCog } from "react-icons/fa";
 import { BiBarChart } from "react-icons/bi";
 import { MdSwitchAccount } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 const SideBar = () => {
   const [showMore, setShowMore] = useState(false);
   const moreRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -27,7 +30,7 @@ const SideBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const queryCLient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
@@ -47,9 +50,9 @@ const SideBar = () => {
       }
     },
     onSuccess: () => {
+      queryClient.clear()
       toast.success("Logout success");
-      queryCLient.setQueryData(["authUser"], null);
-
+      navigate("/login");
     },
     onError: () => {
       toast.error("logout failed")
@@ -66,10 +69,10 @@ const SideBar = () => {
 
         });
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || "Something went wrong");
 
         return data;
+
       } catch (error) {
         throw error
       }
@@ -129,8 +132,12 @@ const SideBar = () => {
             <DropdownItem icon={<FaCog />} label="Settings" />
             <DropdownItem icon={<BiBarChart />} label="Activity" />
             <DropdownItem icon={<MdSwitchAccount />} label="Switch Account" />
-            <DropdownItem icon={<FiLogOut />} label="Logout" to="/login" onClick={(e) => {
+            <DropdownItem icon={<FiLogOut />} label="Logout" onClick={(e) => {
               e.preventDefault();
+
+              // Immediate UI update
+              queryClient.clear(); // Clear cached data right away
+              navigate("/login");  // Redirect instantly
               logout();
             }} />
           </div>
@@ -151,16 +158,30 @@ const SidebarItem = ({ icon, label, to }) => (
   </Link>
 );
 
-const DropdownItem = ({ icon, label, onClick, to }) => (
-  <Link
-    to={to}
-    onClick={onClick}
-    className="flex items-center space-x-4 w-full px-2 py-4 hover:bg-gray-800 rounded-lg transition-all text-sm"
-  >
-    <div className="text-xl">{icon}</div>
-    <span className="text-base">{label}</span>
-  </Link>
-);
+const DropdownItem = ({ icon, label, to, onClick }) => {
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className="flex items-center space-x-4 w-full px-2 py-4 hover:bg-gray-800 rounded-lg transition-all text-sm"
+      >
+        <div className="text-xl">{icon}</div>
+        <span className="text-base">{label}</span>
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center space-x-4 w-full px-2 py-4 hover:bg-gray-800 rounded-lg transition-all text-sm text-left"
+    >
+      <div className="text-xl">{icon}</div>
+      <span className="text-base">{label}</span>
+    </button>
+  );
+};
+
 
 
 export default SideBar;
