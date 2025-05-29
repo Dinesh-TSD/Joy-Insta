@@ -20,7 +20,7 @@ cloudinary.config({
 
 const app = express();
 app.use(cors({
-    origin: "https://joy-insta.onrender.com/",
+    origin: "http://localhost:5000",
     credentials: true
 }))
 app.use(express.urlencoded({
