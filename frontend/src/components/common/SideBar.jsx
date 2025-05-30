@@ -1,6 +1,6 @@
 import { FaHome, FaSearch, FaRegHeart } from "react-icons/fa";
 import { RiMessengerLine } from "react-icons/ri";
-import { MdOutlineExplore, MdAddBox } from "react-icons/md";
+import { MdOutlineExplore, MdAddBox, MdDashboard } from "react-icons/md";
 import { BiMoviePlay } from "react-icons/bi";
 import { HiMenu } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -13,10 +13,13 @@ import { MdSwitchAccount } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Create from "../../pages/Create/Create";
 
 
 const SideBar = () => {
   const [showMore, setShowMore] = useState(false);
+  const [openUpload, setOpenUpload] = useState(false);
+
   const moreRef = useRef();
   const navigate = useNavigate();
 
@@ -98,8 +101,17 @@ const SideBar = () => {
       <SidebarItem icon={<BiMoviePlay />} label="Reels" to="/reels" />
       <SidebarItem icon={<RiMessengerLine />} label="Messages" to="/messages" />
       <SidebarItem icon={<FaRegHeart />} label="Notifications" to="/notifications" />
-      <SidebarItem icon={<MdAddBox />} label="Create" to="/create" />
-      <SidebarItem icon={<MdAddBox />} label="Dashboard" to="/dashboard" />
+      <button
+        onClick={() => setOpenUpload(true)}
+        className="flex items-center space-x-4 w-full px-2 py-4 rounded-lg hover:bg-gray-800 transition-all cursor-pointer"
+      >
+        <div className="text-xl">{<MdAddBox />}</div>
+        <span className="text-base">Create</span>
+      </button>      
+            <Create isOpen={openUpload} onClose={() => setOpenUpload(false)} />
+
+      
+      <SidebarItem icon={<MdDashboard />} label="Dashboard" to="/dashboard" />
 
 
       {/* Profile Avatar */}
@@ -116,10 +128,10 @@ const SideBar = () => {
       />
 
       {/* More Button */}
-      <div className="relative mt-auto w-full px-2" ref={moreRef}>
+      <div className="relative mt-auto w-full " ref={moreRef}>
         <button
           onClick={() => setShowMore(!showMore)}
-          className="flex items-center space-x-4 w-full py-2 rounded-lg hover:bg-gray-800 transition-all cursor-pointer"
+          className="flex items-center space-x-4 w-full px-2 py-4 rounded-lg hover:bg-gray-800 transition-all cursor-pointer"
         >
           <div className="text-xl">
             <HiMenu />
