@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { baseUrl } from '../../constant/url'
+import  baseUrl  from '../../constant/url'
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { formatPostDate } from "../../utils/date";
