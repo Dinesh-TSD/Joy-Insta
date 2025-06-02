@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import authRoute from "./routes/authRoute.js"
 import usersRoute from "./routes/usersRoute.js"
 import postRoute from "./routes/postRoute.js"
+import reelRoute from './routes/reelRoute.js'
 import notificationRoute from "./routes/notificRoute.js"
 import connectDB from "./db/connectDB.js";
 import cookieParser from "cookie-parser";
@@ -35,10 +36,12 @@ app.use(express.json(
     }
 ));
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute)
 app.use("/api/posts", postRoute)
+app.use("/api/reels",reelRoute)
 app.use("/api/notifications", notificationRoute)
 
 if (process.env.NODE_ENV === "production") {

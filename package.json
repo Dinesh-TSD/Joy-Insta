@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build":"npm install && npm install --include=dev --prefix frontend && npm run build --prefix frontend",
+    "build": "npm install && npm install --include=dev --prefix frontend && npm run build --prefix frontend",
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js"
   },
@@ -19,7 +19,8 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.14.1"
+    "mongoose": "^8.14.1",
+    "multer": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
