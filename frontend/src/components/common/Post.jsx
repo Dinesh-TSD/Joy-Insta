@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { baseUrl } from "../../constant/url";
+import  baseUrl  from '../../constant/url'
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { formatPostDate } from "../../utils/date";
@@ -129,7 +129,7 @@ const Post = ({ post }) => {
             toast.error(error.message);
         },
     });
-    
+
     const postOwner = post.user;
     const isLiked = post.likes.includes(authUser.user._id)
     const isMyPost = authUser.user._id === post.user._id;
@@ -153,42 +153,42 @@ const Post = ({ post }) => {
 
     return (
         <>
-             {/* Post Header */}
-              <div className="flex items-center justify-between px-3 pt-3">
+            {/* Post Header */}
+            <div className="flex items-center justify-between px-3 pt-3">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={postOwner.profileImg}
-                    alt={postOwner.username}
-                    className="h-10 w-10 rounded-full object-cover border"
-                  />
-                  <span className="font-semibold text-sm">{postOwner.username}</span>
+                    <img
+                        src={postOwner.profileImg}
+                        alt={postOwner.username}
+                        className="h-10 w-10 rounded-full object-cover border"
+                    />
+                    <span className="font-semibold text-sm">{postOwner.username}</span>
                 </div>
                 <button className="text-xl font-bold text-gray-500 hover:text-black">⋯</button>
-              </div>
+            </div>
 
-              {/* Post Image */}
-              <div className="bg-white border rounded-md shadow-sm mt-2">
+            {/* Post Image */}
+            <div className="bg-white border rounded-md shadow-sm mt-2">
                 <img
-                  src={post.img}
-                  alt="post"
-                  className="w-full object-cover max-h-[600px]"
+                    src={post.img}
+                    alt="post"
+                    className="w-full object-cover max-h-[600px]"
                 />
-              </div>
+            </div>
 
-              {/* Post Actions */}
-              <div className="px-3 pt-3 flex gap-4 text-xl text-gray-700">
+            {/* Post Actions */}
+            <div className="px-3 pt-3 flex gap-4 text-xl text-gray-700">
                 <FaHeart className="hover:text-red-500 cursor-pointer" />
                 <FaRegCompass className="hover:text-blue-500 cursor-pointer" />
                 <FaPlusSquare className="hover:text-purple-500 cursor-pointer" />
-              </div>
+            </div>
 
-              {/* Post Caption */}
-              <div className="px-3 pb-4 text-sm">
+            {/* Post Caption */}
+            <div className="px-3 pb-4 text-sm">
                 <p>
-                  <span className="font-semibold mr-2">{postOwner.user}</span>
-                  {/* {post.caption} */}
+                    <span className="font-semibold mr-2">{postOwner.user}</span>
+                    {/* {post.caption} */}
                 </p>
-              </div>
+            </div>
         </>
     )
 }
