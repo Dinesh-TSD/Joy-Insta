@@ -62,6 +62,7 @@ const Create = ({ isOpen, onClose }) => {
       setImg(null)
       toast.success("post created")
       queryClient.invalidateQueries({ queryKey: ["posts"] })
+      onClose()
     }
   })
 
@@ -69,7 +70,6 @@ const Create = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     CreatePost({ text, img })
-
   };
 
   const handleImgChange = (e) => {
