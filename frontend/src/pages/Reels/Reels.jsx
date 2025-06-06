@@ -1,5 +1,6 @@
 import ReelItem from "../../components/common/ReelItem";
 import sb from '../../assets/sb.mp4'
+
 const Reels = () => {
 
   const dummyReels = [
