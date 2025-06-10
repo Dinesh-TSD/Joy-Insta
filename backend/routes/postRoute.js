@@ -5,14 +5,17 @@ import {
     createPost,
     deletePost,
     getAllPosts,
+    getAllReels,
     getFollowingPosts,
     getLikedPosts, getUserPosts, likeUnlikePost
 } from "../controllers/postController.js";
+import  { uploadPost } from "../middleware/upload.js";
 
 const router = express.Router();
 
-router.get("/all", protectRoute, getAllPosts)
-router.post("/create", protectRoute, createPost)
+router.get("/allposts", protectRoute, getAllPosts)
+router.get("/allreels", protectRoute, getAllReels)
+router.post("/create", protectRoute,uploadPost.single('file'), createPost)
 router.post("/like/:id", protectRoute, likeUnlikePost)
 router.post("/comment/:id", protectRoute, createComment) 
 router.get("/likes/:id", protectRoute, getLikedPosts) 

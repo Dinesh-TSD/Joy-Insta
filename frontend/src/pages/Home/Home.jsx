@@ -1,6 +1,5 @@
 import { FaHeart, FaPlusSquare, FaRegCompass } from 'react-icons/fa';
 import Posts from '../../components/common/Posts'
-import CreatePost from './CreatePost'
 import { useState } from "react";
 
 
