@@ -3,13 +3,13 @@ import dotenv from "dotenv"
 import authRoute from "./routes/authRoute.js"
 import usersRoute from "./routes/usersRoute.js"
 import postRoute from "./routes/postRoute.js"
-import reelRoute from './routes/reelRoute.js'
 import notificationRoute from "./routes/notificRoute.js"
 import connectDB from "./db/connectDB.js";
 import cookieParser from "cookie-parser";
 import cloudinary from "cloudinary"
 import cors from "cors"
 import path from "path"
+import bodyParser from "body-parser"
 
 dotenv.config();
 const __dirname = path.resolve()
@@ -18,8 +18,9 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET_KEY
 })
-
 const app = express();
+app.use(bodyParser.json())
+
 app.use(cors({
     origin: "*",
     credentials: true
@@ -41,7 +42,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute)
 app.use("/api/posts", postRoute)
-app.use("/api/reels",reelRoute)
 app.use("/api/notifications", notificationRoute)
 
 if (process.env.NODE_ENV === "production") {

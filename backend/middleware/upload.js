@@ -1,14 +1,20 @@
-// middleware/upload.js
 import multer from "multer";
-import path from 'path'
+import path from "path";
+import fs from "fs";
+
+// Ensure the directory exists
+const uploadPath = path.resolve("uploads", "posts");
+fs.mkdirSync(uploadPath, { recursive: true });
+
 const storage = multer.diskStorage({
-  destination: "uploads/reels/",
-  filename: (req, file, cb) => {
+  destination: function (req, file, cb) {
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}${ext}`);
-  }
+    cb(null, Date.now() + ext);
+  },
 });
 
-const upload = multer({ storage });
+export const uploadPost = multer({ storage });
 
-export default upload;

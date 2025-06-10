@@ -13,7 +13,7 @@ import { MdSwitchAccount } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import Create from "../../pages/Create/Create";
+import CreatePost from "../../pages/Create/CreatePost";
 
 
 const SideBar = () => {
@@ -108,7 +108,7 @@ const SideBar = () => {
         <div className="text-xl">{<MdAddBox />}</div>
         <span className="text-base">Create</span>
       </button>      
-            <Create isOpen={openUpload} onClose={() => setOpenUpload(false)} />
+            <CreatePost isOpen={openUpload} onClose={() => setOpenUpload(false)} />
 
       
       <SidebarItem icon={<MdDashboard />} label="Dashboard" to="/dashboard" />

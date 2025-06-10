@@ -6,7 +6,6 @@ import Explore from './pages/Explore/Explore'
 import Reels from './pages/Reels/Reels'
 import Messages from './pages/Messages/Messages'
 import Notifications from './pages/Notifications/Notifications'
-import Create from './pages/Create/Create'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Profile from './pages/Profile/Profile'
 import More from './pages/More/More'
@@ -18,6 +17,7 @@ import { Toaster } from 'react-hot-toast'
 import { useQuery } from '@tanstack/react-query'
 import { baseUrl } from './constant/url'
 import LoadingSpinner from './components/common/LoadingSpinner'
+import CreatePost from "./pages/Create/CreatePost"
 
 const App = () => {
 
@@ -55,9 +55,11 @@ const App = () => {
     );
   }
 
+  const showRightPanel = authUser && location.pathname === '/'
+
 
   return (
-       <>
+    <>
       {/* Pages without layout (Login/Signup) */}
       {isAuthPage ? (
         <>
@@ -78,12 +80,12 @@ const App = () => {
             <Route path='/reels' element={authUser ? <Reels /> : <Navigate to="/login" />} />
             <Route path='/messages' element={authUser ? <Messages /> : <Navigate to="/login" />} />
             <Route path='/notifications' element={authUser ? <Notifications /> : <Navigate to="/login" />} />
-            <Route path='/create' element={authUser ? <Create /> : <Navigate to="/login" />} />
+            <Route path='/create' element={authUser ? <CreatePost /> : <Navigate to="/login" />} />
             <Route path='/dashboard' element={authUser ? <Dashboard /> : <Navigate to="/login" />} />
             <Route path='/profile/:username' element={authUser ? <Profile /> : <Navigate to="/login" />} />
             <Route path='/more' element={authUser ? <More /> : <Navigate to="/login" />} />
           </Routes>
-          {authUser && <RightPanel />}
+          {showRightPanel && <RightPanel />}
           <Toaster />
         </div>
       )}

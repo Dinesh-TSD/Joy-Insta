@@ -3,42 +3,43 @@ import User from "../models/userModel.js";
 import Notification from "../models/notificModel.js"
 import cloudinary from "cloudinary"
 
+
+// Create Post (Image or Video)
 export const createPost = async (req, res) => {
     try {
+        const text = req.body?.text || "";
+        const userId = req.user?._id;
 
-        const { text } = req.body;
-        let { img } = req.body;
-        const userId = req.user._id.toString();
-
-        const user = await User.findOne({ _id: userId })
-
-        if (!user) {
-            return res.status(400).json({ error: "User not found" })
+        if (!req.file) {
+            return res.status(400).json({ error: "File is required" });
         }
 
-        if (!text && !img) {
-            return res.status(400).json({ error: "post must have text or img" })
+        const fileUrl = `/uploads/posts/${req.file.filename}`;
+        const mimeType = req.file.mimetype;
+
+        const fileType = mimeType.startsWith("video")
+            ? "video"
+            : mimeType.startsWith("image")
+                ? "image"
+                : null;
+
+        if (!fileType) {
+            return res.status(400).json({ error: "Unsupported file type" });
         }
 
-        if (img) {
-            const uploadedRespone = await cloudinary.uploader.upload(img)
-            img = uploadedRespone.secure_url;
-        }
-
-        const newPost = new Post({
+        const newPost = await Post.create({
             user: userId,
             text,
-            img
-        })
-        await newPost.save();
-        res.status(201).json(newPost)
+            fileUrl,
+            fileType,
+        });
 
+        res.status(201).json({ message: "Post created", post: newPost });
     } catch (error) {
-        console.log(`Error in createPost controller ${error}`, error.stack);
-        res.status(500).json({ error: "Internal server error" })
-
+        console.error("Error creating post:", error);
+        res.status(500).json({ error: error.message || "Server error" });
     }
-}
+};
 
 export const deletePost = async (req, res) => {
     try {
@@ -98,7 +99,7 @@ export const createComment = async (req, res) => {
     }
 }
 
-export const likeUnlikePost = async (req, res) => { 
+export const likeUnlikePost = async (req, res) => {
     try {
         const userId = req.user._id;
         const postId = req.params.id;
@@ -244,3 +245,16 @@ export const getUserPosts = async (req, res) => {
 
     }
 }
+
+export const getAllReels = async (req, res) => {
+  try {
+    const videoPosts = await Post.find({ fileType: "video" })
+      .populate("user", "-password")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(videoPosts);
+  } catch (error) {
+    console.error("Error fetching video posts:", error);
+    res.status(500).json({ error: "Failed to fetch video posts" });
+  }
+};

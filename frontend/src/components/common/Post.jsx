@@ -167,13 +167,20 @@ const Post = ({ post }) => {
             </div>
 
             {/* Post Image */}
-            <div className="bg-white border rounded-md shadow-sm mt-2">
+            {post.fileType === "image" ? (
                 <img
-                    src={post.img}
+                    src={`${baseUrl}${post.fileUrl}`}
                     alt="post"
                     className="w-full object-cover max-h-[600px]"
                 />
-            </div>
+            ) : (
+                <video
+                    controls
+                    src={`${baseUrl}${post.fileUrl}`}
+                    className="w-full object-cover max-h-[600px]"
+                />
+            )}
+
 
             {/* Post Actions */}
             <div className="px-3 pt-3 flex gap-4 text-xl text-gray-700">

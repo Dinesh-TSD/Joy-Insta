@@ -10,7 +10,7 @@ const Posts = () => {
 		queryKey: ["posts"],
 		queryFn: async () => {
 			try {
-				const res = await fetch(`${baseUrl}/api/posts/all`, {
+				const res = await fetch(`${baseUrl}/api/posts/allposts`, {
 					method: "GET",
 					credentials: "include",
 					headers: {
