@@ -1,4 +1,4 @@
-import { FaHeart, FaPlusSquare, FaRegComment, FaRegCompass } from "react-icons/fa";
+import { FaBookmark, FaComment, FaHeart, FaPlusSquare, FaRegComment, FaRegCompass, FaShare } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
@@ -149,53 +149,105 @@ const Post = ({ post }) => {
         if (isLiking) return;
         likePost();
     };
+console.log(authUser);
 
 
     return (
         <>
-            {/* Post Header */}
-            <div className="flex items-center justify-between px-3 pt-3">
-                <div className="flex items-center gap-3">
-                    <img
-                        src={postOwner.profileImg}
-                        alt={postOwner.username}
-                        className="h-10 w-10 rounded-full object-cover border"
-                    />
-                    <span className="font-semibold text-sm">{postOwner.username}</span>
+            <div
+                className="
+    relative
+    rounded-xl
+    bg-[#0A0F1C]/60
+    overflow-hidden
+    shadow-[0_0_6px_rgba(0,255,247,0.1),0_0_12px_rgba(0,255,247,0.05)]
+    hover:shadow-[0_0_12px_rgba(0,255,247,0.2),0_0_20px_rgba(0,255,247,0.1)]
+    transition-shadow duration-200 ease-in-out
+    border border-[#00FFF7]/10
+    backdrop-blur-md
+    p-2 mb-6 max-w-[500px] mx-auto
+  "
+            >
+                {/* Post Header */}
+                <div className="flex items-center justify-between px-3 pt-3">
+                    <div className="flex items-center gap-3">
+                        <img
+                            src={postOwner.profileImg}
+                            alt={postOwner.username}
+                            className="h-10 w-10 rounded-full object-cover border border-[#00FFF7]/30"
+                        />
+                        <span className="font-semibold text-sm text-white">{postOwner.username}</span>
+                    </div>
+                    <button className="text-xl font-bold text-gray-400 hover:text-white">⋯</button>
                 </div>
-                <button className="text-xl font-bold text-gray-500 hover:text-black">⋯</button>
+
+                {/* Post Media */}
+                <div className="mt-3 w-full max-h-[600px] overflow-hidden rounded-lg">
+                    {post.fileType === "image" ? (
+                        <img
+                            src={`${baseUrl}${post.fileUrl}`}
+                            alt="post"
+                            className="w-full h-auto object-contain"
+                        />
+                    ) : (
+                        <video
+                            controls
+                            src={`${baseUrl}${post.fileUrl}`}
+                            className="w-full h-auto object-contain"
+                        />
+                    )}
+                </div>
+
+                {/* Action Icons */}
+                <div className="px-3 pt-3 flex justify-between items-center text-white">
+                    <div className="flex gap-4 text-2xl">
+                        <FaHeart className="hover:text-red-500 cursor-pointer" />
+                        <FaComment className="hover:text-sky-400 cursor-pointer" />
+                        <FaShare className="hover:text-green-400 cursor-pointer" />
+                    </div>
+                    <FaBookmark className="hover:text-yellow-300 cursor-pointer text-2xl" />
+                </div>
+
+                {/* Like Count */}
+                <div className="px-3 pt-2 text-sm text-white font-semibold">
+                    {post.likes?.length || 0} likes
+                </div>
+
+                {/* Caption */}
+                <div className="px-3 pt-1 pb-1 text-sm text-[#C5EFFF]">
+                    <p>
+                        <span className="font-semibold mr-2 text-white">{postOwner.username}</span>
+                        {post.caption}
+                    </p>
+                </div>
+
+                {/* View All Comments */}
+                <div className="px-3 text-sm text-[#8899AA] hover:underline cursor-pointer">
+                    View all {post.comments?.length || 0} comments
+                </div>
+
+                {/* Add Comment */}
+                <div className="px-3 pt-2 flex items-center gap-2">
+                    <img
+                        src={authUser.user.profileImg}
+                        alt="Your profile"
+                        className="h-8 w-8 rounded-full object-cover"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Add a comment..."
+                        className="bg-transparent border-none outline-none text-sm text-white flex-1 placeholder-[#8899AA]"
+                    />
+                    <button className="text-sm text-[#00FFF7] font-semibold">Post</button>
+                </div>
+
+                {/* Timestamp */}
+                <div className="px-3 pt-1 pb-2 text-xs text-[#8899AA] uppercase">
+                    {new Date(post.createdAt).toLocaleDateString()}
+                </div>
             </div>
 
-            {/* Post Image */}
-            {post.fileType === "image" ? (
-                <img
-                    src={`${baseUrl}${post.fileUrl}`}
-                    alt="post"
-                    className="w-full object-cover max-h-[600px]"
-                />
-            ) : (
-                <video
-                    controls
-                    src={`${baseUrl}${post.fileUrl}`}
-                    className="w-full object-cover max-h-[600px]"
-                />
-            )}
 
-
-            {/* Post Actions */}
-            <div className="px-3 pt-3 flex gap-4 text-xl text-gray-700">
-                <FaHeart className="hover:text-red-500 cursor-pointer" />
-                <FaRegCompass className="hover:text-blue-500 cursor-pointer" />
-                <FaPlusSquare className="hover:text-purple-500 cursor-pointer" />
-            </div>
-
-            {/* Post Caption */}
-            <div className="px-3 pb-4 text-sm">
-                <p>
-                    <span className="font-semibold mr-2">{postOwner.user}</span>
-                    {/* {post.caption} */}
-                </p>
-            </div>
         </>
     )
 }
