@@ -149,25 +149,10 @@ const Post = ({ post }) => {
         if (isLiking) return;
         likePost();
     };
-console.log(authUser);
-
 
     return (
         <>
-            <div
-                className="
-    relative
-    rounded-xl
-    bg-[#0A0F1C]/60
-    overflow-hidden
-    shadow-[0_0_6px_rgba(0,255,247,0.1),0_0_12px_rgba(0,255,247,0.05)]
-    hover:shadow-[0_0_12px_rgba(0,255,247,0.2),0_0_20px_rgba(0,255,247,0.1)]
-    transition-shadow duration-200 ease-in-out
-    border border-[#00FFF7]/10
-    backdrop-blur-md
-    p-2 mb-6 max-w-[500px] mx-auto
-  "
-            >
+            <div className="p-2 mb-6 max-w-[500px] mx-auto">
                 {/* Post Header */}
                 <div className="flex items-center justify-between px-3 pt-3">
                     <div className="flex items-center gap-3">
@@ -182,7 +167,7 @@ console.log(authUser);
                 </div>
 
                 {/* Post Media */}
-                <div className="mt-3 w-full max-h-[600px] overflow-hidden rounded-lg">
+                <div className="mt-3 w-full max-h-[600px] overflow-hidden ">
                     {post.fileType === "image" ? (
                         <img
                             src={`${baseUrl}${post.fileUrl}`}
