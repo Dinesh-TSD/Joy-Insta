@@ -1,203 +1,138 @@
-import { FaHeart, FaPlusSquare, FaRegComment, FaRegCompass } from "react-icons/fa";
-import { BiRepost } from "react-icons/bi";
-import { FaRegHeart } from "react-icons/fa";
-import { FaRegBookmark } from "react-icons/fa6";
-import { FaTrash } from "react-icons/fa";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { BsThreeDots } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { baseUrl } from '../../constant/url'
-import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 import { formatPostDate } from "../../utils/date";
-
+import PostActions from "./PostActions";
 
 const Post = ({ post }) => {
-
-    const [comment, setComment] = useState("");
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef();
     const queryClient = useQueryClient();
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handler = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => {
+            document.removeEventListener("mousedown", handler);
+        };
+    }, []);
 
     const { data: authUser } = useQuery({
         queryKey: ["authUser"],
         queryFn: async () => {
-            try {
-                const res = await fetch(`${baseUrl}/api/auth/me`, {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Content-type": "application/json"
-                    }
-                })
-                const data = await res.json();
-
-                if (!res.ok) throw new Error(data.error || "somthing went wrong")
-
-                return data;
-            } catch (error) {
-                throw error
-            }
-        },
-    })
-    const { mutate: deletePost, isPending: isDeleting } = useMutation({
-        mutationFn: async () => {
-            try {
-                const res = await fetch(`${baseUrl}/api/posts/${post._id}`, {
-                    method: "DELETE",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "somthing went wrong")
-
-                return data;
-            } catch (error) {
-                throw error
-            }
-        },
-        onSuccess: () => {
-            toast.success("post deleted")
-            queryClient.invalidateQueries({
-                queryKey: ["posts"]
-            })
-        }
-    })
-
-    const { mutate: likePost, isPending: isLiking } = useMutation({
-        mutationFn: async () => {
-            try {
-                const res = await fetch(`${baseUrl}/api/posts/like/${post._id}`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-type": "application/json"
-                    }
-                })
-                const data = await res.json();
-
-                if (!res.ok) throw Error(data.error || "somthing went wrong")
-                return data;
-            } catch (error) {
-                throw error
-            }
-        },
-        onSuccess: (updatedLikes) => {
-            queryClient.setQueryData(["posts"], (oldData) => {
-                return oldData.map((p) => {
-                    if (p._id === post._id) {
-                        return { ...p, likes: updatedLikes }
-                    }
-                    return p;
-                })
-            })
-        },
-        onError: (error) => {
-            toast.error(error.message)
-        }
-    })
-
-    const { mutate: commentPost, isPending: isCommenting } = useMutation({
-        mutationFn: async () => {
-            try {
-
-                const res = await fetch(`${baseUrl}/api/posts/comment/${post._id}`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ text: comment }),
-                });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    throw new Error(data.error || "Something went wrong");
-                }
-                return data;
-            } catch (error) {
-                throw new Error(error);
-            }
-        },
-        onSuccess: () => {
-            toast.success("Comment posted successfully");
-            setComment("");
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
-        },
-        onError: (error) => {
-            toast.error(error.message);
+            const res = await fetch(`${baseUrl}/api/auth/me`, {
+                method: "GET",
+                credentials: "include",
+                headers: { "Content-type": "application/json" }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Something went wrong");
+            return data;
         },
     });
 
+    const { mutate: deletePost } = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(`${baseUrl}/api/posts/${post._id}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Something went wrong");
+            return data;
+        },
+        onSuccess: () => {
+            toast.success("Post deleted");
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+        }
+    });
+
     const postOwner = post.user;
-    const isLiked = post.likes.includes(authUser.user._id)
-    const isMyPost = authUser.user._id === post.user._id;
-    const formattedDate = formatPostDate(post.createdAt)
-
-    const handleDeletePost = () => {
-        deletePost();
-    };
-
-    const handlePostComment = (e) => {
-        e.preventDefault();
-        if (isCommenting) return;
-        commentPost();
-    };
-
-    const handleLikePost = () => {
-        if (isLiking) return;
-        likePost();
-    };
-
+    const formattedDate = formatPostDate(post.createdAt);
+    const isLiked = post.likes.includes(authUser?.user._id);
 
     return (
-        <>
+        <div className="p-2 mb-6 max-w-[500px] mx-auto">
             {/* Post Header */}
             <div className="flex items-center justify-between px-3 pt-3">
                 <div className="flex items-center gap-3">
                     <img
                         src={postOwner.profileImg}
                         alt={postOwner.username}
-                        className="h-10 w-10 rounded-full object-cover border"
+                        className="h-10 w-10 rounded-full object-cover border border-[#00FFF7]/30"
                     />
-                    <span className="font-semibold text-sm">{postOwner.username}</span>
+                    <span className="font-semibold text-sm text-white">{postOwner.username}</span>
                 </div>
-                <button className="text-xl font-bold text-gray-500 hover:text-black">⋯</button>
+                {/* Menu */}
+                <div className="relative" ref={menuRef}>
+                    <button onClick={() => setMenuOpen(!menuOpen)}>
+                        <BsThreeDots className="text-xl" />
+                    </button>
+                    {menuOpen && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-300 shadow-lg rounded-md z-50">
+                            <button
+                                onClick={deletePost}
+                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {/* Post Image */}
-            {post.fileType === "image" ? (
-                <img
-                    src={`${baseUrl}${post.fileUrl}`}
-                    alt="post"
-                    className="w-full object-cover max-h-[600px]"
-                />
-            ) : (
-                <video
-                    controls
-                    src={`${baseUrl}${post.fileUrl}`}
-                    className="w-full object-cover max-h-[600px]"
-                />
-            )}
-
+            {/* Post Media */}
+            <div className="mt-3 w-full max-h-[600px] overflow-hidden">
+                {post.fileType === "image" ? (
+                    <img src={`${baseUrl}${post.fileUrl}`} alt="post" className="w-full h-auto object-contain" />
+                ) : (
+                    <video controls src={`${baseUrl}${post.fileUrl}`} className="w-full h-auto object-contain" />
+                )}
+            </div>
 
             {/* Post Actions */}
-            <div className="px-3 pt-3 flex gap-4 text-xl text-gray-700">
-                <FaHeart className="hover:text-red-500 cursor-pointer" />
-                <FaRegCompass className="hover:text-blue-500 cursor-pointer" />
-                <FaPlusSquare className="hover:text-purple-500 cursor-pointer" />
-            </div>
+            <PostActions post={post} currentUser={authUser.user} isLiked={isLiked} />
 
-            {/* Post Caption */}
-            <div className="px-3 pb-4 text-sm">
+            {/* Caption */}
+            <div className="px-3 pt-1 pb-1 text-sm text-[#C5EFFF]">
                 <p>
-                    <span className="font-semibold mr-2">{postOwner.user}</span>
-                    {/* {post.caption} */}
+                    <span className="font-semibold mr-2 text-white">{postOwner.username}</span>
+                    {post.caption}
                 </p>
             </div>
-        </>
-    )
-}
 
-export default Post
+            {/* Comments and Timestamp */}
+            <div className="px-3 text-sm text-[#8899AA] hover:underline cursor-pointer">
+                View all {post.comments?.length || 0} comments
+            </div>
+
+            <div className="px-3 pt-2 flex items-center gap-2">
+                <img
+                    src={authUser.user.profileImg}
+                    alt="Your profile"
+                    className="h-8 w-8 rounded-full object-cover"
+                />
+                <input
+                    type="text"
+                    placeholder="Add a comment..."
+                    className="bg-transparent border-none outline-none text-sm text-white flex-1 placeholder-[#8899AA]"
+                />
+                <button className="text-sm text-[#00FFF7] font-semibold">Post</button>
+            </div>
+
+            <div className="px-3 pt-1 pb-2 text-xs text-[#8899AA] uppercase">
+                {new Date(post.createdAt).toLocaleDateString()}
+            </div>
+        </div>
+    );
+};
+
+export default Post;

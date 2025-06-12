@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { baseUrl } from "../../constant/url";
 
 const Posts = () => {
-
 	const { data: posts, isLoading, refetch, isRefetching } = useQuery({
 		queryKey: ["posts"],
 		queryFn: async () => {
@@ -16,19 +15,19 @@ const Posts = () => {
 					headers: {
 						"Content-Type": "application/json"
 					}
-				})
+				});
 				const data = await res.json();
-				if (!res.ok) throw new Error(data.error || "somthing went wrong")
+				if (!res.ok) throw new Error(data.error || "Something went wrong");
 				return data;
 			} catch (error) {
-				throw error
+				throw error;
 			}
 		}
-	})
+	});
 
 	useEffect(() => {
-		refetch()
-	}, [refetch])
+		refetch();
+	}, [refetch]);
 
 	return (
 		<>
@@ -39,19 +38,28 @@ const Posts = () => {
 					<PostSkeleton />
 				</div>
 			)}
+
 			{!isLoading && !isRefetching && posts?.length === 0 && (
 				<p className='text-center my-4'>No posts in this tab. Switch 👻</p>
 			)}
+
 			{!isLoading && !isRefetching && posts && (
 				<div className="flex flex-col">
 					{posts.map((post, index) => (
-						<Post key={post._id} post={post} />
+						<div key={post._id} className="max-w-md mx-auto w-full">
+							<Post post={post} />
+
+							{/* Divider only between posts */}
+							{index !== posts.length - 1 && (
+								<div className="border-t border-[#dbdbdb80] my-3 w-full"></div>
+							)}
+						</div>
 					))}
-					{/* Divider */}
 
 				</div>
 			)}
 		</>
 	);
 };
+
 export default Posts;
