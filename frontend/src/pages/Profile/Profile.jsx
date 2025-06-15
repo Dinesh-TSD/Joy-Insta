@@ -179,7 +179,7 @@ const Profile = () => {
 									</div>
 								</div>
 							</div>
-							<div className='flex justify-end px-4 mt-5'>
+							<div className='flex justify-end px-4 mt-6'>
 								{isMyProfile && <EditProfile authUser={authUser} />}
 								{!isMyProfile && (
 									<button
