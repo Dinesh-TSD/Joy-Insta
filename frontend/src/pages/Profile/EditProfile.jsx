@@ -79,7 +79,7 @@ const EditProfile = ({ authUser }) => {
 	return (
 		<>
 			<button
-				className='btn btn-outline rounded-full btn-sm'
+				className='btn btn-outline rounded-full btn-'
 				onClick={() => document.getElementById("edit_profile_modal").showModal()}
 			>
 				Edit profile
